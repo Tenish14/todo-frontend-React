@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react"
+import AddTodo from "./components/forms/AddTodo"
+import Todo from "./components/Todo"
 
 function App() {
+  const [todos, setTodos] = useState([])
+  
+  const getTodos = () => {
+    fetch("http://localhost:5000/todos")
+    .then(res => res.json())
+    .then(data => {
+      setTodos(data)
+    }).catch (e => console.error(e))
+  }
+
+  useEffect( () => {
+    getTodos()
+  }, [])
+
+  const showTodos = todos.map(todo => <Todo key={todo._id} data={todo}  getTodos={getTodos} />)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AddTodo getTodos={getTodos}/>
+      {showTodos}
     </div>
   );
 }
